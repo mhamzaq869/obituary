@@ -15,7 +15,7 @@ Route::get('/test', [TestController::class, 'test']);
 
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]], function() {
     Route::get('/', [IndexController::class, 'index'])->name('index');
-    
+
     Route::get('/privacy-policy', [PageController::class, 'pagePrivacy']);
     Route::get('/terms', [PageController::class, 'pageTerms']);
 });
