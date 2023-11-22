@@ -921,7 +921,7 @@
                         formData.append("image_src", resizedImage);
                     break;
                     case 'multi-prompt':
-                        $('.multi_prompts_description').each(function(idx, e) { 
+                        $('.multi_prompts_description').each(function(idx, e) {
                             formData.append("stable_description[]", $(e).val())
                         })
                     break;
@@ -934,7 +934,7 @@
             @endforeach
 
             // for (var pair of formData.entries()) {
-            //     console.log(pair[0]+ ' : ' + pair[1]); 
+            //     console.log(pair[0]+ ' : ' + pair[1]);
             // }
             $.ajax({
                 type: "post",

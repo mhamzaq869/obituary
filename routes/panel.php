@@ -6,7 +6,7 @@ use App\Http\Controllers\AIArticleWizardController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\AdminController;
-use App\Http\Controllers\Market\MarketPlaceController; 
+use App\Http\Controllers\Market\MarketPlaceController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\PaymentController;
@@ -40,7 +40,9 @@ use Illuminate\Http\File;
 use App\Models\SettingTwo;
 
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']], function () {
-    
+
+    Route::get('/scan-book/{id}', [UserController::class, 'downloadPdf']);
+
     Route::prefix('dashboard')->middleware('auth')->name('dashboard.')->group(function () {
 
         Route::get('/', [UserController::class, 'redirect'])->name('index');
@@ -80,8 +82,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                     Route::get('/delete/{slug}', [UserController::class, 'documentsDelete'])->name('delete');
                     Route::get('/delete/image/{slug}', [UserController::class, 'documentsImageDelete'])->name('image.delete');
                     Route::post('/workbook-save', [UserController::class, 'openAIGeneratorWorkbookSave']);
+                    Route::post('/generate-pdf', [UserController::class, 'generateQrPdf']);
                 });
-
 
                 Route::middleware('hasTokens')->group(function () {
                     Route::prefix('chat')->name('chat.')->group(function () {
@@ -158,7 +160,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::get('walletmaxpay/success', [WalletmaxpayController::class, 'success'])->name('walletmaxpay.success');
 
                 Route::get('iyzico/products', [IyzicoController::class, 'iyzicoProductsList'])->name('iyzico.products');
-                
+
                 Route::get('iyzico/prepaid', [IyzicoController::class, 'prepaid'])->name('iyzico.prepaid');
                 Route::post('iyzico/prepaidPay', [IyzicoController::class, 'prepaidPay'])->name('iyzico.prepaidPay');
                 Route::post('iyzico/prepaid/callback', [IyzicoController::class, 'prepaidCallback'])->name('iyzico.prepaid.callback');
@@ -448,7 +450,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
 
         //Coupons
         Route::prefix('coupons')->name('coupons.')->group(function () {
-            Route::post('/validate-coupon', [AdminController::class, 'couponsValidate'])->name('validate');                
+            Route::post('/validate-coupon', [AdminController::class, 'couponsValidate'])->name('validate');
         });
 
         //Support Area
@@ -586,7 +588,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
         $nameOfImage = Str::random(12) . ".png";
 
         //save file on local storage or aws s3
-        Storage::disk('public')->put($nameOfImage, base64_decode($base64Image)); 
+        Storage::disk('public')->put($nameOfImage, base64_decode($base64Image));
         $path = '/uploads/' . $nameOfImage;
         error_log('1');
         $uploadedFile = new File(substr($path, 1));

@@ -14,6 +14,7 @@ use App\Models\OpenaiGeneratorFilter;
 use App\Models\PaymentPlans;
 use App\Models\Setting;
 use App\Models\Subscriptions as SubscriptionsModel;
+use App\Models\Template;
 use App\Models\YokassaSubscriptions as YokassaSubscriptionsModel;
 use App\Models\User;
 use App\Models\UserAffiliate;
@@ -36,6 +37,7 @@ use Laravel\Cashier\Payment;
 use Stripe\PaymentIntent;
 use Stripe\Plan;
 use enshrined\svgSanitize\Sanitizer;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
@@ -111,6 +113,8 @@ class UserController extends Controller
     {
         $openai = OpenAIGenerator::whereSlug($slug)->firstOrFail();
         $settings = Setting::first();
+        $templates = Template::all();
+
         // Fetch the Site Settings object with openai_api_secret
         $apiKeys = explode(',', $settings->openai_api_secret);
         $apiKey = $apiKeys[array_rand($apiKeys)];
@@ -123,12 +127,14 @@ class UserController extends Controller
         $apikeyPart2 = base64_encode($parts[1]);
         $apikeyPart3 = base64_encode($parts[2]);
         $apiUrl = base64_encode('https://api.openai.com/v1/chat/completions');
+
         return view('panel.user.openai.generator_workbook', compact(
             'openai',
             'apikeyPart1',
             'apikeyPart2',
             'apikeyPart3',
             'apiUrl',
+            'templates',
         ));
     }
 
@@ -139,6 +145,52 @@ class UserController extends Controller
         $workbook->title = $request->workbook_title;
         $workbook->save();
         return response()->json([], 200);
+    }
+
+    public function generateQrPdf(Request $request)
+    {
+        try {
+            $template = Template::find($request->template_id);
+            $html = str_replace("{CONTENT}", $request->content, $template->code);
+
+            $pdf = PDF::loadHTML($html);
+            $filename = uniqid() . '.pdf';
+
+            // Storage path for PDF
+            $storagePath = 'public/assets/pdf/';
+
+            // Create directory if it doesn't exist
+            if (!Storage::exists($storagePath)) {
+                Storage::makeDirectory($storagePath);
+            }
+
+            // Save the PDF to storage
+            Storage::put($storagePath . $filename, $pdf->output());
+
+            // Move the saved file to the desired location
+            $sourceFilePath = $storagePath . $filename;
+            $destinationFilePath = 'public/assets/pdf/' . $filename; // Modify the destination as needed
+
+            Storage::move($sourceFilePath, $destinationFilePath);
+
+            // Update UserOpenai model
+            UserOpenai::where('id', $request->obituary_id)->update([
+                'qrCodeId' => md5(uniqid(rand(), true)),
+                'template' => $destinationFilePath,
+            ]);
+
+            return response()->json(['status' => true, 'obituary' => UserOpenai::find($request->obituary_id)],200); // Indicating success
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()],400); // Indicating failure
+        }
+        // return PDF::loadHTML($html)->download();
+    }
+
+
+    public function downloadPdf($qrCodeId)
+    {
+        $obituary = UserOpenai::where('qrCodeId', $qrCodeId)->first();
+        return Storage::download($obituary->template);
     }
 
     //Chat
@@ -223,7 +275,7 @@ class UserController extends Controller
         } else {
             $is_active_gateway = 0;
         }
-        
+
         //check if any subscription is active
         $userId = Auth::user()->id;
         // Get current active subscription
@@ -285,10 +337,10 @@ class UserController extends Controller
             if($storage == 's3') {
                 Storage::disk('s3')->delete(basename($image));
             } else {
-                
+
                     unlink(substr($image, 1));
-            
-            }  
+
+            }
         } catch (\Throwable $th) {}
         $workbook->delete();
         return redirect()->route('dashboard.user.openai.documents.all')->with(['message' => 'Document deleted successfuly', 'type' => 'success']);
@@ -304,7 +356,7 @@ class UserController extends Controller
             $file = str_replace('/', '', parse_url($workbook->output)['path']);
             Storage::disk('s3')->delete($file);
         } else {
-            
+
             // Manual deleting depends on response
             if (str_contains($workbook->output, 'https://')) {
                 // AWS Storage
@@ -314,7 +366,7 @@ class UserController extends Controller
                 $file = str_replace('/uploads/', "", $workbook->output);
                 Storage::disk('public')->delete($file);
             }
-            
+
         }
         $workbook->delete();
         return back()->with(['message' => 'Deleted successfuly', 'type' => 'success']);

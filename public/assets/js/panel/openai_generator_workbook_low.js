@@ -11,8 +11,8 @@ const streamUrl = $( 'meta[name=stream-url]' ).attr( 'content' );
 const generate = async ( message_no, creativity, maximum_length, number_of_results, prompt ) => {
 	"use strict";
 	const submitBtn = document.getElementById( "openai_generator_button" );
-	const typingEl = document.querySelector( '.tox-edit-area > .lqd-typing' );	
-	
+	const typingEl = document.querySelector( '.tox-edit-area > .lqd-typing' );
+
 	const chunk = [];
 	let streaming = true;
 	var result = '';
@@ -34,6 +34,7 @@ const generate = async ( message_no, creativity, maximum_length, number_of_resul
 			typingEl?.classList?.add( 'lqd-is-hidden' );
 		}
 	}, 20 );
+
 
 	if (stream_type == 'backend') {
 
@@ -82,7 +83,7 @@ const generate = async ( message_no, creativity, maximum_length, number_of_resul
 					stream: true, // For streaming responses
 				}),
 			});
-			
+
 			if(response.status != 200) {
 				throw response;
 			}
@@ -158,6 +159,10 @@ function saveResponse( input, response, message_no ) {
 		data: formData,
 		contentType: false,
 		processData: false,
+        success: function(response){
+            $("#qr_generator").show()
+            $("#obituary_id").val(message_no)
+        }
 	} );
 	return false;
 }
