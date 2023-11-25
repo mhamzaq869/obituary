@@ -38,6 +38,7 @@ use Stripe\PaymentIntent;
 use Stripe\Plan;
 use enshrined\svgSanitize\Sanitizer;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Arr;
 
 class UserController extends Controller
 {
@@ -73,7 +74,8 @@ class UserController extends Controller
     {
         $list = OpenAIGenerator::all();
         $filters = OpenaiGeneratorFilter::get();
-        return view('panel.user.openai.list', compact('list', 'filters'));
+        $templates = Template::all();
+        return view('panel.user.openai.list', compact('list', 'filters', 'templates'));
     }
 
     public function openAIFavoritesList()
@@ -150,11 +152,16 @@ class UserController extends Controller
     public function generateQrPdf(Request $request)
     {
         try {
+
+            $content = str_replace(['<p>', '</p>'], '', $request->content);
+            $arrayContent = explode('<br>',$content);
+            $filteredContent = Arr::flatten(array_filter($arrayContent));
+
             $template = Template::find($request->template_id);
-            $html = str_replace("{CONTENT}", $request->content, $template->code);
+            $html = $this->shortcode_replace($template->code, $filteredContent);
 
             $pdf = PDF::loadHTML($html);
-            $filename = uniqid() . '.pdf';
+            $filename = $filteredContent[0].'_'.uniqid() . '.pdf';
 
             // Storage path for PDF
             $storagePath = 'public/assets/pdf/';
@@ -183,7 +190,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()],400); // Indicating failure
         }
-        // return PDF::loadHTML($html)->download();
+
     }
 
 
@@ -191,6 +198,42 @@ class UserController extends Controller
     {
         $obituary = UserOpenai::where('qrCodeId', $qrCodeId)->first();
         return Storage::download($obituary->template);
+    }
+
+
+    public function shortcode_replace($template, $content)
+    {
+        $templateHtml = $template;
+
+        if(str_contains($templateHtml, '{NAME}')) {
+            $templateHtml = str_replace("{NAME}", $content[0], $templateHtml);
+        }
+
+        if(str_contains($templateHtml, '{DATE}')) {
+            $templateHtml = str_replace("{DATE}", $content[1], $templateHtml);
+        }
+
+        if(str_contains($templateHtml, '{BIRTH-PLACE}')) {
+            $templateHtml = str_replace("{BIRTH-PLACE}", $content[2], $templateHtml);
+        }
+
+        if(str_contains($templateHtml, '{FAMILY-MEMBER}')) {
+            $templateHtml = str_replace("{FAMILY-MEMBER}", $content[3], $templateHtml);
+        }
+
+        if(str_contains($templateHtml, '{EDUCATION}')) {
+            $templateHtml = str_replace("{EDUCATION}", $content[4], $templateHtml);
+        }
+
+        if(str_contains($templateHtml, '{CAREER-WORK-HISTORY}')) {
+            $templateHtml = str_replace("{CAREER-WORK-HISTORY}", $content[5], $templateHtml);
+        }
+
+        if(str_contains($templateHtml, '{HOBBIES}')) {
+            $templateHtml = str_replace("{HOBBIES}", $content[6], $templateHtml);
+        }
+
+        return $templateHtml;
     }
 
     //Chat

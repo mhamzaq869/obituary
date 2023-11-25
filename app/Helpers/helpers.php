@@ -157,7 +157,7 @@ function country2flag(string $countryCode): string
     }elseif ( $countryCode === 'da' ){
         $countryCode = 'dk';
     }
-    
+
     return (string) preg_replace_callback(
         '/./',
         static fn (array $letter) => mb_chr(ord($letter[0]) % 32 + 0x1F1E5),
@@ -223,7 +223,7 @@ function getVoiceNames($hash) {
         "cs-CZ-Standard-A" => "Tereza (". __('Female').")",
         "cs-CZ-Wavenet-A" => "Karolína (". __('Female').")",
         //"da-DK-Neural2-D" => "Neural2 - FEMALE",
-        //"da-DK-Neural2-F" => "Neural2 - MALE",                    
+        //"da-DK-Neural2-F" => "Neural2 - MALE",
         "da-DK-Standard-A" => "Emma (". __('Female').")",
         "da-DK-Standard-A" => "Freja (". __('Female').")",
         "da-DK-Standard-A" => "Ida (". __('Female').")",
@@ -665,26 +665,26 @@ function getMetaTitle($setting){
 
     if($lang == $settingTwo->languages_default)
     {
-        if(isset($setting->meta_title)) 
-        {            
+        if(isset($setting->meta_title))
+        {
             $title = $setting->meta_title;
-        } 
+        }
         else{
-            $title = $setting->site_name . " | " . __('Home'); 
-        } 
+            $title = $setting->site_name . " | " . __('Home');
+        }
     }else{
         $meta_title = PrivacyTerms::where('type', 'meta_title')->where('lang', $lang)->first();
         if($meta_title){
             $title = $meta_title->content;
         }else{
 
-            if(isset($setting->meta_title)) 
-            {            
+            if(isset($setting->meta_title))
+            {
                 $title = $setting->meta_title;
-            } 
+            }
             else{
-                $title = $setting->site_name . " | " . __('Home'); 
-            } 
+                $title = $setting->site_name . " | " . __('Home');
+            }
         }
     }
 
@@ -697,26 +697,26 @@ function getMetaDesc($setting){
 
     if($lang == $settingTwo->languages_default)
     {
-        if(isset($setting->meta_description)) 
-        {            
+        if(isset($setting->meta_description))
+        {
             $desc = $setting->meta_description;
-        } 
+        }
         else{
             $desc = "";
-        } 
+        }
     }else{
         $meta_description = PrivacyTerms::where('type', 'meta_desc')->where('lang', $lang)->first();
         if($meta_description){
             $desc = $meta_description->content;
         }else{
 
-            if(isset($setting->meta_description)) 
-            {            
+            if(isset($setting->meta_description))
+            {
                 $desc = $setting->meta_description;
-            } 
+            }
             else{
                 $desc = "";
-            } 
+            }
         }
     }
 

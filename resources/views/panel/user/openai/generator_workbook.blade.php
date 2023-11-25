@@ -23,9 +23,232 @@
             font-weight: 500;
             word-wrap: break-word;
         }
+
+        @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap');
+
+        button:focus,
+        input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /*----------multiple-file-upload-----------*/
+        .input-group.file-caption-main {
+            display: none;
+        }
+
+        .close.fileinput-remove {
+            display: none;
+        }
+
+        .file-drop-zone {
+            margin: 0px;
+            border: 1px solid #fff;
+            background-color: #fff;
+            padding: 0px;
+            display: contents;
+        }
+
+        .file-drop-zone.clickable:hover {
+            border-color: #fff;
+        }
+
+        .file-drop-zone .file-preview-thumbnails {
+            display: inline;
+        }
+
+        .file-drop-zone-title {
+            padding: 15px !important;
+            height: 120px !important;
+            width: 120px !important;
+            font-size: 12px !important;
+        }
+
+        .file-input-ajax-new {
+            display: inline-block;
+        }
+
+        .file-input.theme-fas {
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-preview {
+            padding: 0px !important;
+            border: none !important;
+            display: inline !important;
+        }
+
+        .file-drop-zone-title {
+            display: none;
+        }
+
+        .file-footer-caption {
+            display: none !important;
+        }
+
+        .kv-file-upload {
+            display: none;
+        }
+
+        .file-upload-indicator {
+            display: none;
+        }
+
+        .file-drag-handle.drag-handle-init.text-info {
+            display: none;
+        }
+
+        .krajee-default.file-preview-frame .kv-file-content {
+            width: 90px !important;
+            height: 90px !important;
+            display: flex;
+            text-align: center;
+            align-items: center;
+        }
+
+        .krajee-default.file-preview-frame {
+            background-color: #fff;
+            margin: 3px !important;
+            border-radius: 15px !important;
+            overflow: hidden;
+        }
+
+        .krajee-default.file-preview-frame:not(.file-preview-error):hover {
+            box-shadow: none !important;
+            border-color: #ed3237 !important;
+        }
+
+        .krajee-default.file-preview-frame:not(.file-preview-error):hover .file-preview-image {
+            transform: scale(1.1);
+        }
+
+        .krajee-default.file-preview-frame {
+            box-shadow: none;
+            border-color: #fff;
+            max-width: 150px !important;
+            margin: 5px !important;
+            padding: 0px !important;
+            transition: 0.5s !important;
+        }
+
+        .file-thumbnail-footer,
+        .file-actions {
+            width: 20px !important;
+            height: 20px !important;
+            position: absolute !important;
+            top: 3px !important;
+            right: 3px !important;
+        }
+
+        .kv-file-remove:focus,
+        .kv-file-remove:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .kv-file-remove {
+            border-radius: 50% !important;
+            z-index: 1;
+            right: 0;
+            position: absolute;
+            top: 0;
+            text-align: center;
+            color: #fff;
+            background-color: #ed3237;
+            border: 1px solid #ed3237;
+            padding: 2px 6px !important;
+            font-size: 11px !important;
+            transition: 0.5s !important;
+        }
+
+        .kv-file-remove:hover {
+            border-color: #fdeff0;
+            background-color: #fdeff0;
+            color: #ed1924;
+        }
+
+        .kv-preview-data.file-preview-video {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .btn-outline-secondary.focus,
+        .btn-outline-secondary:focus {
+            box-shadow: none;
+        }
+
+        .btn-toggleheader,
+        .btn-fullscreen,
+        .btn-borderless {
+            display: none;
+        }
+
+        .btn-kv.btn-close {
+            color: #fff;
+            border: none;
+            background-color: #ed3237;
+            font-size: 11px !important;
+            width: 18px !important;
+            height: 18px !important;
+            text-align: center;
+            padding: 0px !important;
+        }
+
+        .btn-outline-secondary:not(:disabled):not(.disabled).active:focus,
+        .btn-outline-secondary:not(:disabled):not(.disabled):active:focus,
+        .show>.btn-outline-secondary.dropdown-toggle:focus {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #000;
+            box-shadow: none;
+            color: #ed3237;
+        }
+
+        .kv-file-content .file-preview-image {
+            width: 90px !important;
+            height: 90px !important;
+            max-width: 90px !important;
+            max-height: 90px !important;
+            transition: 0.5s;
+        }
+
+        .btn-danger.btn-file {
+            padding: 0px;
+            height: 95px;
+            width: 95px;
+            display: inline-block;
+            margin: 5px;
+            border-color: #fdeff0;
+            background-color: #fdeff0;
+            color: #ed1924;
+            border-radius: 15px;
+            padding-top: 30px;
+            transition: 0.5s;
+        }
+
+        .btn-danger.btn-file:active,
+        .btn-danger.btn-file:hover {
+            background-color: #fde3e5;
+            color: #ed1924;
+            border-color: #fdeff0;
+            box-shadow: none;
+        }
+
+        .btn-danger.btn-file i {
+            font-size: 30px;
+        }
+
+        @media (max-width: 350px) {
+            .krajee-default.file-preview-frame:not([data-template=audio]) .kv-file-content {
+                width: 90px;
+            }
+        }
     </style>
 
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-image-checkbox.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.8/css/fileinput.min.css" />
+
 @endsection
 
 @section('content')
@@ -352,7 +575,8 @@
                     @else
                         <div
                             class="border-solid border-t border-r-0 border-b-0 border-l-0 border-[var(--tblr-border-color)] pt-[30px] mt-[15px]">
-                            <form class="workbook-form" action="{{ url('/dashboard/user/openai/documents/generate-pdf') }}" method="POST"
+                            <form class="workbook-form"
+                                action="{{ url('/dashboard/user/openai/documents/generate-pdf') }}" method="POST"
                                 enctype="multipart/form-data">
                                 @csrf
                                 <div class="mb-[20px]">
@@ -371,19 +595,28 @@
                                             <input type="hidden" id="template_id" name="template_id">
                                             <input type="hidden" id="obituary_id" name="obituary_id">
 
-                                            @foreach ($templates as $template)
-                                                <div class="col-md-3">
-                                                    <div class="custom-control custom-radio image-checkbox">
-                                                        <input type="radio" class="custom-control-input"
-                                                            onclick="selectTemplate({{ $template?->id }})"
-                                                            id="template_{{ $template?->id }}" name="template">
-                                                        <label class="custom-control-label" for="template_{{ $template?->id }}">
-                                                            <img src="{{ $template?->thumbnail }}" alt="#"
-                                                                class="img-fluid">
-                                                        </label>
+                                            <div class="container text-center mb-5 mt-5">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <h4><a href="https://plugins.krajee.com/file-input" target="_blank">Upload images that tell the story</a></h4>
                                                     </div>
                                                 </div>
-                                            @endforeach
+                                            </div>
+
+                                            <section class="bg-diffrent mb-3">
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="verify-sub-box">
+                                                                <div class="file-loading">
+                                                                    <input id="multiplefileupload" type="file" accept=".jpg,.gif,.png"
+                                                                        multiple>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
 
 
                                             <div class="col-xs-12 mt-[10px] items-center">
@@ -397,12 +630,12 @@
                                             </div>
                                         </div>
 
-
                                     </div>
 
                                     <!--- Step 2 , Working Hours Tab --->
                                     <div class="form-group" id="step2Field">
-                                        <p id="qrCodeContent" style="display: flex; justify-content: center; align-item:center;"></p>
+                                        <p id="qrCodeContent"
+                                            style="display: flex; justify-content: center; align-item:center;"></p>
                                     </div>
 
                                 </div>
@@ -436,6 +669,8 @@
     @endif
     <script src="{{ asset('assets/js/source.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.8/js/fileinput.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.8/js/plugins/sortable.min.js"></script>
 
     <script>
         const stream_type = '{!! $settings_two->openai_default_stream_server !!}';
@@ -588,6 +823,26 @@
             }
         }
 
+        // ----------multiplefile-upload---------
+        $("#multiplefileupload").fileinput({
+            'theme': 'fa',
+            'uploadUrl': '#',
+            showRemove: false,
+            showUpload: false,
+            showZoom: false,
+            showCaption: false,
+            browseClass: "btn btn-danger",
+            browseLabel: "",
+            browseIcon: "<i class='fa fa-plus'></i>",
+            overwriteInitial: false,
+            initialPreviewAsData: true,
+            fileActionSettings: {
+                showUpload: false,
+                showZoom: false,
+                removeIcon: "<i class='fa fa-times'></i>",
+            }
+        });
+
         $(document).ready(function() {
             $(".workbook-form").on('submit', (function(e) {
                 e.preventDefault();
@@ -599,7 +854,7 @@
                     cache: false,
                     processData: false,
                     success: function(response) {
-                        if(response.status){
+                        if (response.status) {
                             $("#step1Field").hide()
 
                             new QRCode(document.getElementById("qrCodeContent"), {
@@ -619,9 +874,6 @@
             }));
         });
 
-        function selectTemplate(id) {
-            $("#template_id").val(id)
-        }
     </script>
 
 @endsection
