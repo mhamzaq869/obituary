@@ -6,6 +6,10 @@ const tinymceOptions = {
 	plugins: [
 		'advlist', 'link', 'autolink', 'lists', 'code',
 	],
+    forced_root_block : false,
+    force_br_newlines : true,
+    force_p_newlines : false,
+    convert_newlines_to_brs : true,
 	toolbar: 'styles | forecolor backcolor emoticons | bold italic underline | link | bullist numlist | alignleft aligncenter alignright',
 	directionality: document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr'
 };

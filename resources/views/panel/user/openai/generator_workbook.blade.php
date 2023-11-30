@@ -24,6 +24,23 @@
             word-wrap: break-word;
         }
 
+        /* ------- Multi Step Tabs -------- */
+        #svg_form_time {
+            height: 15px;
+            max-width: 80%;
+            margin: 40px auto 20px;
+            display: block;
+        }
+
+        #svg_form_time circle,
+        #svg_form_time rect {
+            fill: white;
+        }
+
+        .disabled {
+            display: none;
+        }
+        /*----------multiple-file-upload-----------*/
         @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap');
 
         button:focus,
@@ -32,7 +49,6 @@
             box-shadow: none;
         }
 
-        /*----------multiple-file-upload-----------*/
         .input-group.file-caption-main {
             display: none;
         }
@@ -426,10 +442,8 @@
                         @endif
 
                         <div class="col-xs-12 mt-[10px]">
-                            <button id="openai_generator_button"
-                                class="btn btn-primary w-100 py-[0.75em] flex items-center group" type="submit">
-                                <span
-                                    class="hidden group-[.lqd-form-submitting]:inline-flex">{{ __('Please wait...') }}</span>
+                            <button id="openai_generator_button" class="btn btn-primary w-100 py-[0.75em] flex items-center group" type="submit">
+                                <span class="hidden group-[.lqd-form-submitting]:inline-flex">{{ __('Please wait...') }}</span>
                                 <span class="group-[.lqd-form-submitting]:hidden">{{ __('Generate') }}</span>
                             </button>
                         </div>
@@ -589,28 +603,37 @@
 
                                 <div id="qr_generator" style="display: none;">
 
-                                    <div class="form-group" id="step1Field">
-
+                                    <!--- Step 1 , Upload images Tab --->
+                                    <section id="step1Field">
                                         <div class="row">
                                             <input type="hidden" id="template_id" name="template_id">
                                             <input type="hidden" id="obituary_id" name="obituary_id">
 
-                                            <div class="container text-center mb-5 mt-5">
+                                            <div class="container mb-5 mt-5 text-center">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <h4><a href="https://plugins.krajee.com/file-input" target="_blank">Upload images that tell the story</a></h4>
+                                                        <h4>Upload the cover image</h4>
+                                                    </div>
+                                                    <div class="col-md-12 mt-3">
+                                                        <div class="verify-sub-box">
+                                                            <div class="file-loading">
+                                                                <input id="coverfileupload" type="file" name="profile_image" accept=".jpg,.gif,.png">
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <section class="bg-diffrent mb-3">
-                                                <div class="container">
+                                                <div class="container text-center">
                                                     <div class="row">
                                                         <div class="col-md-12">
+                                                            <h4>Upload images that tell the story</h4>
+                                                        </div>
+                                                        <div class="col-md-12 mt-3">
                                                             <div class="verify-sub-box">
                                                                 <div class="file-loading">
-                                                                    <input id="multiplefileupload" type="file" accept=".jpg,.gif,.png"
-                                                                        multiple>
+                                                                    <input id="multiplefileupload" type="file" name="images[]" accept=".jpg,.gif,.png" multiple>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -619,24 +642,24 @@
                                             </section>
 
 
-                                            <div class="col-xs-12 mt-[10px] items-center">
-                                                <button id="pdf_generator_button"
-                                                    class="btn btn-primary mt-5 w-50 py-[0.75em] flex items-center group"
-                                                    type="submit">
-                                                    <span class="hidden group-[.lqd-form-submitting]:inline-flex">Please
-                                                        wait...</span>
-                                                    <span class="group-[.lqd-form-submitting]:hidden">Generate</span>
+                                            <div class="col-xs-12 mt-[10px] text-center m-auto w-50">
+                                                <button id="pdf_generator_button" class="button btn btn-primary mt-5 w-100 py-[0.75em] flex items-center group" type="submit">
+                                                    <span id="pdf_generator_button_waiting" class="hidden group-[.lqd-form-submitting]:inline-flex">Please wait...</span>
+                                                    <span id="pdf_generator_button_generate" class="group-[.lqd-form-submitting]:hidden">Generate</span>
                                                 </button>
                                             </div>
                                         </div>
+                                    </section>
 
-                                    </div>
+                                    <!--- Step 2 , QrCode Tab --->
+                                    <section id="step2Field" style="display: none;">
 
-                                    <!--- Step 2 , Working Hours Tab --->
-                                    <div class="form-group" id="step2Field">
-                                        <p id="qrCodeContent"
-                                            style="display: flex; justify-content: center; align-item:center;"></p>
-                                    </div>
+                                        <div class="text-left my-3">
+                                            <p id="qrCodeContent" style="display: flex; justify-content: center; align-item:center;"></p>
+                                            <button type="button" class="button btn btn-primary btn-block text-white" id="prev">&larr;
+                                                Previous</button>
+                                        </div>
+                                    </section>
 
                                 </div>
                             </form>
@@ -824,6 +847,25 @@
         }
 
         // ----------multiplefile-upload---------
+        $("#coverfileupload").fileinput({
+            'theme': 'fa',
+            'uploadUrl': '#',
+            showRemove: false,
+            showUpload: false,
+            showZoom: false,
+            showCaption: false,
+            browseClass: "btn btn-danger",
+            browseLabel: "",
+            browseIcon: "<i class='fa fa-plus'></i>",
+            overwriteInitial: false,
+            initialPreviewAsData: true,
+            fileActionSettings: {
+                showUpload: false,
+                showZoom: false,
+                removeIcon: "<i class='fa fa-times'></i>",
+            }
+        });
+
         $("#multiplefileupload").fileinput({
             'theme': 'fa',
             'uploadUrl': '#',
@@ -853,10 +895,16 @@
                     contentType: false,
                     cache: false,
                     processData: false,
+                    beforeSend: function(){
+                        $("#pdf_generator_button").attr('disabled',true)
+                        $("#pdf_generator_button_generate").hide()
+                        $("#pdf_generator_button_waiting").show()
+                    },
                     success: function(response) {
                         if (response.status) {
                             $("#step1Field").hide()
 
+                            $("#qrCodeContent").html('')
                             new QRCode(document.getElementById("qrCodeContent"), {
                                 text: `${window.location.origin}/scan-book/${response.obituary.qrCodeId}`,
                                 width: 220,
@@ -864,6 +912,10 @@
                             });
 
                             $("#step2Field").show()
+
+                            $("#pdf_generator_button").removeAttr('disabled')
+                            $("#pdf_generator_button_generate").show()
+                            $("#pdf_generator_button_waiting").hide()
 
                         }
                     },
@@ -874,6 +926,56 @@
             }));
         });
 
+        $("#template_id").val(getCookie('template_id'));
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0;i < ca.length;i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            }
+            return null;
+        }
+
+        $(document).ready(function() {
+            var child = 1;
+            var length = $("section").length - 1;
+            $("#submit").addClass("disabled");
+
+            $("section").not("section:nth-of-type(1)").hide();
+
+            $(".button").click(function() {
+
+                var id = $(this).attr("id");
+                if (id == "next") {
+                    $("#prev").removeClass("disabled");
+                    if (child >= length) {
+                        $(this).addClass("disabled");
+                        $('#submit').removeClass("disabled");
+                    }
+                    if (child <= length) {
+                        child++;
+                    }
+                } else if (id == "prev") {
+                    $("#next").removeClass("disabled");
+                    if (child <= 2) {
+                        $(this).removeClass("disabled");
+                    }
+                    if (child > 1) {
+                        child--;
+                    }
+                }
+
+                var currentSection = $("section:nth-of-type(" + child + ")");
+                currentSection.fadeIn();
+                currentSection.css('transform', 'translateX(0)');
+                currentSection.prevAll('section').css('transform', 'translateX(-100px)');
+                $('section').not(currentSection).hide();
+            });
+
+        });
     </script>
 
 @endsection

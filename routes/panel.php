@@ -42,6 +42,7 @@ use App\Models\SettingTwo;
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']], function () {
 
     Route::get('/scan-book/{id}', [UserController::class, 'downloadPdf']);
+    Route::get('/preview/{id}', [UserController::class, 'previewPdf']);
 
     Route::prefix('dashboard')->middleware('auth')->name('dashboard.')->group(function () {
 

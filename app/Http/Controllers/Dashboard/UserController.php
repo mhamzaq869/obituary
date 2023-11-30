@@ -38,7 +38,11 @@ use Stripe\PaymentIntent;
 use Stripe\Plan;
 use enshrined\svgSanitize\Sanitizer;
 use Barryvdh\DomPDF\Facade\Pdf;
+use FontLib\Font;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Response as FacadesResponse;
+use Response;
 
 class UserController extends Controller
 {
@@ -158,10 +162,21 @@ class UserController extends Controller
             $filteredContent = Arr::flatten(array_filter($arrayContent));
 
             $template = Template::find($request->template_id);
-            $html = $this->shortcode_replace($template->code, $filteredContent);
+            $html = $this->shortcode_replace($template->code, $filteredContent, $request);
 
-            $pdf = PDF::loadHTML($html);
-            $filename = $filteredContent[0].'_'.uniqid() . '.pdf';
+            // $font = Font::load(url('/storage/app/fonts/Sansita/Sansita-Regular.ttf'));
+            // $font->parse();
+            // $font->saveAdobeFontMetrics('Sansita-Regular.ufm');
+
+            $pdf = PDF::loadHTML($html)
+                        ->setPaper('A4', 'portrait')
+                        ->setOption([
+                            'isHtml5ParserEnabled' => true,
+                            'isRemoteEnabled' => true,
+                            'defaultFont' => 'times',
+                        ])->setWarnings(false);
+
+            $filename = Str::slug( $filteredContent[0], '_').'_'.uniqid() . '.pdf';
 
             // Storage path for PDF
             $storagePath = 'public/assets/pdf/';
@@ -188,6 +203,7 @@ class UserController extends Controller
 
             return response()->json(['status' => true, 'obituary' => UserOpenai::find($request->obituary_id)],200); // Indicating success
         } catch (\Exception $e) {
+            dd($e);
             return response()->json(['status' => false, 'message' => $e->getMessage()],400); // Indicating failure
         }
 
@@ -200,37 +216,122 @@ class UserController extends Controller
         return Storage::download($obituary->template);
     }
 
+    public function previewPdf($id)
+    {
+        $template = Template::find($id);
+        return view('page.pdfviewer', get_defined_vars());
+    }
 
-    public function shortcode_replace($template, $content)
+
+    public function shortcode_replace($template, $content, $request)
     {
         $templateHtml = $template;
+        $shortcodeImage = '<div class="gallery">';
 
-        if(str_contains($templateHtml, '{NAME}')) {
-            $templateHtml = str_replace("{NAME}", $content[0], $templateHtml);
+        foreach($request->images as $image){
+            $shortcodeImage .= '<figure class="gallery__item gallery__item--1">
+                                <img src="data:'.$image->getMimeType().';base64,' . base64_encode(file_get_contents($image)).'" alt="Gallery image 1" class="gallery__img">
+                            </figure> ';
+        }
+        $shortcodeImage .= '</div>';
+
+        //Replace image with shortcodes
+        if(isset($request->profile_image)){
+            if(str_contains($templateHtml, '{PROFILE-IMAGE}')) {
+                $templateHtml = str_replace("{PROFILE-IMAGE}", 'data:'.$request->profile_image->getMimeType().';base64,' . base64_encode(file_get_contents($request->profile_image)), $templateHtml);
+            }
+        }else{
+            $templateHtml = str_replace("{PROFILE-IMAGE}", " ", $templateHtml);
         }
 
-        if(str_contains($templateHtml, '{DATE}')) {
-            $templateHtml = str_replace("{DATE}", $content[1], $templateHtml);
+
+        if(isset($request->images)){
+            if(str_contains($templateHtml, '{IMAGES}')) {
+                $templateHtml = str_replace("{IMAGES}", $shortcodeImage, $templateHtml);
+            }
+        }else{
+            $templateHtml = str_replace("{IMAGES}", " ", $templateHtml);
         }
 
-        if(str_contains($templateHtml, '{BIRTH-PLACE}')) {
-            $templateHtml = str_replace("{BIRTH-PLACE}", $content[2], $templateHtml);
+        //Replace text with shortcodes
+        if(isset($content[0])){
+            if(str_contains($templateHtml, '{NAME}')) {
+                $templateHtml = str_replace("{NAME}", $content[0], $templateHtml);
+            }
+        }else{
+            $templateHtml = str_replace("{NAME}", " ", $templateHtml);
         }
 
-        if(str_contains($templateHtml, '{FAMILY-MEMBER}')) {
-            $templateHtml = str_replace("{FAMILY-MEMBER}", $content[3], $templateHtml);
+        if(isset($content[1])){
+            if(str_contains($templateHtml, '{DATE}')) {
+                $templateHtml = str_replace("{DATE}", $content[1], $templateHtml);
+            }
+        }else{
+            $templateHtml = str_replace("{DATE}", " ", $templateHtml);
         }
 
-        if(str_contains($templateHtml, '{EDUCATION}')) {
-            $templateHtml = str_replace("{EDUCATION}", $content[4], $templateHtml);
+        if(isset($content[2])){
+            if(str_contains($templateHtml, '{BIRTH-PLACE}')) {
+                $templateHtml = str_replace("{BIRTH-PLACE}", $content[2], $templateHtml);
+            }
+        }else{
+            $templateHtml = str_replace("{BIRTH-PLACE}", " ", $templateHtml);
         }
 
-        if(str_contains($templateHtml, '{CAREER-WORK-HISTORY}')) {
-            $templateHtml = str_replace("{CAREER-WORK-HISTORY}", $content[5], $templateHtml);
+        if(isset($content[3])){
+            if(str_contains($templateHtml, '{FAMILY-MEMBER}')) {
+                $templateHtml = str_replace("{FAMILY-MEMBER}", $content[3], $templateHtml);
+            }
+        }else{
+                $templateHtml = str_replace("{FAMILY-MEMBER}", " ", $templateHtml);
         }
 
-        if(str_contains($templateHtml, '{HOBBIES}')) {
-            $templateHtml = str_replace("{HOBBIES}", $content[6], $templateHtml);
+        if(isset($content[4])){
+            if(str_contains($templateHtml, '{EDUCATION}')) {
+                $templateHtml = str_replace("{EDUCATION}", $content[4], $templateHtml);
+            }
+        }else{
+            $templateHtml = str_replace("{EDUCATION}", " ", $templateHtml);
+        }
+
+        if(isset($content[5])){
+            if(str_contains($templateHtml, '{CAREER-WORK-HISTORY}')) {
+                $templateHtml = str_replace("{CAREER-WORK-HISTORY}", $content[5], $templateHtml);
+            }
+        }else{
+            $templateHtml = str_replace("{CAREER-WORK-HISTORY}", " ", $templateHtml);
+        }
+
+        if(isset($content[6])){
+            if(str_contains($templateHtml, '{HOBBIES}')) {
+                $templateHtml = str_replace("{HOBBIES}", $content[6], $templateHtml);
+            }
+        }else{
+            $templateHtml = str_replace("{HOBBIES}", " ", $templateHtml);
+        }
+
+        if(isset($content[7])){
+            if(str_contains($templateHtml, '{COMMUNITY}')) {
+                $templateHtml = str_replace("{COMMUNITY}", $content[7], $templateHtml);
+            }
+        }else{
+            $templateHtml = str_replace("{COMMUNITY}", " ", $templateHtml);
+        }
+
+        if(isset($content[8])){
+            if(str_contains($templateHtml, '{RELIGIOUS}')) {
+                $templateHtml = str_replace("{RELIGIOUS}", $content[8], $templateHtml);
+            }
+        }else{
+            $templateHtml = str_replace("{RELIGIOUS}", " ", $templateHtml);
+        }
+
+        if(isset($content[9])){
+            if(str_contains($templateHtml, '{MEMORIAL}')) {
+                $templateHtml = str_replace("{MEMORIAL}", $content[9], $templateHtml);
+            }
+        }else{
+            $templateHtml = str_replace("{MEMORIAL}", " ", $templateHtml);
         }
 
         return $templateHtml;

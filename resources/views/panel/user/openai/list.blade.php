@@ -65,7 +65,7 @@
     }
 
     label img {
-        height: 120px;
+        height: 150px;
         width: 120px;
         transition-duration: 0.2s;
         transform-origin: 50% 50%;
@@ -148,10 +148,11 @@
                     <p id="errorMessage" class="text-danger"></p>
                     <ul>
                         @foreach ($templates as $template)
-                            <li>
+                            <li class="text-center">
                                 <input type="radio" id="template_{{ $template?->id }}" name="template"
                                     onclick="selectTemplate({{ $template?->id }})" />
-                                <label for="template_{{ $template?->id }}"><img src="{{ $template?->thumbnail }}" /></label>
+                                <label for="template_{{ $template?->id }}"><img src="{{ asset($template?->thumbnail) }}" /></label>
+                                <a type="button" target="_blank" href="{{url('/preview',[$template->id])}}" class="btn btn-outline-primary">Preview</a>
                             </li>
                         @endforeach
                     </ul>
