@@ -164,10 +164,6 @@ class UserController extends Controller
             $template = Template::find($request->template_id);
             $html = $this->shortcode_replace($template->code, $filteredContent, $request);
 
-            // $font = Font::load(url('/storage/app/fonts/Sansita/Sansita-Regular.ttf'));
-            // $font->parse();
-            // $font->saveAdobeFontMetrics('Sansita-Regular.ufm');
-
             $pdf = PDF::loadHTML($html)
                         ->setPaper('A4', 'portrait')
                         ->setOption([
@@ -203,7 +199,6 @@ class UserController extends Controller
 
             return response()->json(['status' => true, 'obituary' => UserOpenai::find($request->obituary_id)],200); // Indicating success
         } catch (\Exception $e) {
-            dd($e);
             return response()->json(['status' => false, 'message' => $e->getMessage()],400); // Indicating failure
         }
 
@@ -226,14 +221,22 @@ class UserController extends Controller
     public function shortcode_replace($template, $content, $request)
     {
         $templateHtml = $template;
-        $shortcodeImage = '<div class="gallery">';
+        $shortcodeImage = '';
 
-        foreach($request->images as $image){
-            $shortcodeImage .= '<figure class="gallery__item gallery__item--1">
-                                <img src="data:'.$image->getMimeType().';base64,' . base64_encode(file_get_contents($image)).'" alt="Gallery image 1" class="gallery__img">
-                            </figure> ';
+        foreach($request->images as $i => $image){
+             // Open a new row for every even index
+            if (($i + 1) % 2 == 1) {
+                $shortcodeImage .= '<tr>';
+            }
+            $shortcodeImage .= '<td>
+                                    <img src="data:'.$image->getMimeType().';base64,' . base64_encode(file_get_contents($image)).'" alt="Cinque Terre" width="200px" height="200px">
+                                </td>';
+
+             // Close the row for every odd index or when it's the last element
+            if (($i + 1) % 2 == 0 || $i == count($request->images) - 1) {
+                $shortcodeImage .= '</tr>';
+            }
         }
-        $shortcodeImage .= '</div>';
 
         //Replace image with shortcodes
         if(isset($request->profile_image)){
@@ -254,17 +257,17 @@ class UserController extends Controller
         }
 
         //Replace text with shortcodes
-        if(isset($content[0])){
+        if(isset($request->obituary_name)){
             if(str_contains($templateHtml, '{NAME}')) {
-                $templateHtml = str_replace("{NAME}", $content[0], $templateHtml);
+                $templateHtml = str_replace("{NAME}", $request->obituary_name, $templateHtml);
             }
         }else{
             $templateHtml = str_replace("{NAME}", " ", $templateHtml);
         }
 
-        if(isset($content[1])){
+        if(isset($request->obituary_dob)){
             if(str_contains($templateHtml, '{DATE}')) {
-                $templateHtml = str_replace("{DATE}", $content[1], $templateHtml);
+                $templateHtml = str_replace("{DATE}", $request->obituary_dob, $templateHtml);
             }
         }else{
             $templateHtml = str_replace("{DATE}", " ", $templateHtml);

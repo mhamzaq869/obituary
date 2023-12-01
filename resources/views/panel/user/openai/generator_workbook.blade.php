@@ -608,6 +608,8 @@
                                         <div class="row">
                                             <input type="hidden" id="template_id" name="template_id">
                                             <input type="hidden" id="obituary_id" name="obituary_id">
+                                            <input type="hidden" id="obituary_name" name="obituary_name">
+                                            <input type="hidden" id="obituary_dob" name="obituary_dob">
 
                                             <div class="container mb-5 mt-5 text-center">
                                                 <div class="row">
@@ -810,6 +812,9 @@
                             const maximum_length = parseInt(data.maximum_length);
                             const number_of_results = data.number_of_results;
                             const prompt = data.inputPrompt;
+
+                            $("#obituary_name").val($("#full-name").val());
+                            $("#obituary_dob").val($("#date-of-birth").val()+'-'+$("#date-of-death").val());
 
                             return generate(message_no, creativity, maximum_length, number_of_results, prompt);
                         @endif
