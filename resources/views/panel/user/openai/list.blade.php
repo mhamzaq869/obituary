@@ -65,8 +65,8 @@
     }
 
     label img {
-        height: 150px;
-        width: 120px;
+        height: 200px;
+        width: 150px;
         transition-duration: 0.2s;
         transform-origin: 50% 50%;
     }
