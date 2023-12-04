@@ -221,22 +221,22 @@ class UserController extends Controller
     public function shortcode_replace($template, $content, $request)
     {
         $templateHtml = $template;
-        $shortcodeImage = '';
+        // $shortcodeImage = '';
 
-        foreach($request->images as $i => $image){
-             // Open a new row for every even index
-            if (($i + 1) % 2 == 1) {
-                $shortcodeImage .= '<tr>';
-            }
-            $shortcodeImage .= '<td>
-                                    <img src="data:'.$image->getMimeType().';base64,' . base64_encode(file_get_contents($image)).'" alt="Cinque Terre" width="200px" height="200px">
-                                </td>';
+        // foreach($request->images as $i => $image){
+        //      // Open a new row for every even index
+        //     if (($i + 1) % 2 == 1) {
+        //         $shortcodeImage .= '<tr>';
+        //     }
+        //     $shortcodeImage .= '<td>
+        //                             <img src="data:'.$image->getMimeType().';base64,' . base64_encode(file_get_contents($image)).'" alt="Cinque Terre" width="200px" height="200px">
+        //                         </td>';
 
-             // Close the row for every odd index or when it's the last element
-            if (($i + 1) % 2 == 0 || $i == count($request->images) - 1) {
-                $shortcodeImage .= '</tr>';
-            }
-        }
+        //      // Close the row for every odd index or when it's the last element
+        //     if (($i + 1) % 2 == 0 || $i == count($request->images) - 1) {
+        //         $shortcodeImage .= '</tr>';
+        //     }
+        // }
 
         //Replace image with shortcodes
         if(isset($request->profile_image)){
