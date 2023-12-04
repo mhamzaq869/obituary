@@ -248,13 +248,13 @@ class UserController extends Controller
         }
 
 
-        if(isset($request->images)){
-            if(str_contains($templateHtml, '{IMAGES}')) {
-                $templateHtml = str_replace("{IMAGES}", $shortcodeImage, $templateHtml);
-            }
-        }else{
-            $templateHtml = str_replace("{IMAGES}", " ", $templateHtml);
-        }
+        // if(isset($request->images)){
+        //     if(str_contains($templateHtml, '{IMAGES}')) {
+        //         $templateHtml = str_replace("{IMAGES}", $shortcodeImage, $templateHtml);
+        //     }
+        // }else{
+        //     $templateHtml = str_replace("{IMAGES}", " ", $templateHtml);
+        // }
 
         //Replace text with shortcodes
         if(isset($request->obituary_name)){

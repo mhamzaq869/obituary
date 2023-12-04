@@ -626,7 +626,7 @@
                                                 </div>
                                             </div>
 
-                                            <section class="bg-diffrent mb-3">
+                                            {{-- <section class="bg-diffrent mb-3">
                                                 <div class="container text-center">
                                                     <div class="row">
                                                         <div class="col-md-12">
@@ -641,7 +641,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </section>
+                                            </section> --}}
 
 
                                             <div class="col-xs-12 mt-[10px] text-center m-auto w-50">
