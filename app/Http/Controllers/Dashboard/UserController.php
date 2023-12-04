@@ -208,13 +208,15 @@ class UserController extends Controller
     public function downloadPdf($qrCodeId)
     {
         $obituary = UserOpenai::where('qrCodeId', $qrCodeId)->first();
-        return Storage::download($obituary->template);
+        Storage::download($obituary->template);
+
+        return view('page.pdfviewer', ['filePath' => $obituary?->template]);
     }
 
     public function previewPdf($id)
     {
         $template = Template::find($id);
-        return view('page.pdfviewer', get_defined_vars());
+        return view('page.pdfviewer', ['filePath' => $template?->filePath]);
     }
 
 
