@@ -40,6 +40,7 @@
         .disabled {
             display: none;
         }
+
         /*----------multiple-file-upload-----------*/
         @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap');
 
@@ -442,8 +443,10 @@
                         @endif
 
                         <div class="col-xs-12 mt-[10px]">
-                            <button id="openai_generator_button" class="btn btn-primary w-100 py-[0.75em] flex items-center group" type="submit">
-                                <span class="hidden group-[.lqd-form-submitting]:inline-flex">{{ __('Please wait...') }}</span>
+                            <button id="openai_generator_button"
+                                class="btn btn-primary w-100 py-[0.75em] flex items-center group" type="submit">
+                                <span
+                                    class="hidden group-[.lqd-form-submitting]:inline-flex">{{ __('Please wait...') }}</span>
                                 <span class="group-[.lqd-form-submitting]:hidden">{{ __('Generate') }}</span>
                             </button>
                         </div>
@@ -619,7 +622,8 @@
                                                     <div class="col-md-12 mt-3">
                                                         <div class="verify-sub-box">
                                                             <div class="file-loading">
-                                                                <input id="coverfileupload" type="file" name="profile_image" accept=".jpg,.gif,.png">
+                                                                <input id="coverfileupload" type="file"
+                                                                    name="profile_image" accept=".jpg,.gif,.png">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -643,11 +647,15 @@
                                                 </div>
                                             </section> --}}
 
-
                                             <div class="col-xs-12 mt-[10px] text-center m-auto w-50">
-                                                <button id="pdf_generator_button" class="button btn btn-primary mt-5 w-100 py-[0.75em] flex items-center group" type="submit">
-                                                    <span id="pdf_generator_button_waiting" class="hidden group-[.lqd-form-submitting]:inline-flex">Please wait...</span>
-                                                    <span id="pdf_generator_button_generate" class="group-[.lqd-form-submitting]:hidden">Generate</span>
+                                                <button id="pdf_generator_button"
+                                                    class="button btn btn-primary mt-5 w-100 py-[0.75em] flex items-center group"
+                                                    type="submit">
+                                                    <span id="pdf_generator_button_waiting"
+                                                        class="hidden group-[.lqd-form-submitting]:inline-flex">Please
+                                                        wait...</span>
+                                                    <span id="pdf_generator_button_generate"
+                                                        class="group-[.lqd-form-submitting]:hidden">Generate</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -658,14 +666,14 @@
 
                                         <div class="text-left my-3">
                                             <p id="qrCodeContent" style="display: flex; justify-content: center; align-item:center;"></p>
-                                            <button type="button" class="button btn btn-primary btn-block text-white" id="prev">&larr;
-                                                Previous</button>
+
+                                            <button type="button" class="button btn btn-primary btn-block text-white" id="prev">&larr;Previous</button>
+                                            <a href="#" type="button" class="button btn btn-info btn-block text-white" id="print">Print</a>
                                         </div>
                                     </section>
 
                                 </div>
                             </form>
-
 
                         </div>
                     @endif
@@ -693,7 +701,7 @@
         <script src="/assets/libs/prism/prism.js"></script>
     @endif
     <script src="{{ asset('assets/js/source.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <script src="https://www.cssscript.com/demo/qr-code-generator-logo-title/easy.qrcode.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.8/js/fileinput.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.8/js/plugins/sortable.min.js"></script>
 
@@ -814,7 +822,7 @@
                             const prompt = data.inputPrompt;
 
                             $("#obituary_name").val($("#full-name").val());
-                            $("#obituary_dob").val($("#date-of-birth").val()+'-'+$("#date-of-death").val());
+                            $("#obituary_dob").val($("#date-of-birth").val() + '-' + $("#date-of-death").val());
 
                             return generate(message_no, creativity, maximum_length, number_of_results, prompt);
                         @endif
@@ -900,22 +908,24 @@
                     contentType: false,
                     cache: false,
                     processData: false,
-                    beforeSend: function(){
-                        $("#pdf_generator_button").attr('disabled',true)
+                    beforeSend: function() {
+                        $("#pdf_generator_button").attr('disabled', true)
                         $("#pdf_generator_button_generate").hide()
                         $("#pdf_generator_button_waiting").show()
                     },
                     success: function(response) {
                         if (response.status) {
                             $("#step1Field").hide()
-
                             $("#qrCodeContent").html('')
+
                             new QRCode(document.getElementById("qrCodeContent"), {
                                 text: `${window.location.origin}/scan-book/${response.obituary.qrCodeId}`,
+                                logo: 'https://obu.harrisarshad.com/upload/images/logo/640e-2x-funeralize-logo.png',
                                 width: 220,
-                                height: 220
+                                height: 220,
                             });
 
+                            $("#print").attr('href', `${window.location.origin}/preview/${response.obituary.qrCodeId}/print`)
                             $("#step2Field").show()
 
                             $("#pdf_generator_button").removeAttr('disabled')
@@ -936,10 +946,10 @@
         function getCookie(name) {
             var nameEQ = name + "=";
             var ca = document.cookie.split(';');
-            for(var i=0;i < ca.length;i++) {
+            for (var i = 0; i < ca.length; i++) {
                 var c = ca[i];
-                while (c.charAt(0)==' ') c = c.substring(1,c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
             }
             return null;
         }

@@ -22,7 +22,7 @@
     <div id="example1"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/pdfobject@2.2.12/pdfobject.min.js"></script>
-    <script>PDFObject.embed("{{asset($template->filePath)}}", "#example1",  {width: "100%"});</script>
+    <script>PDFObject.embed("{{asset($templatePath)}}", "#example1",  {width: "100%"});</script>
 </body>
 
 </html>
